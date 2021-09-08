@@ -1,7 +1,7 @@
 const Jwt = require('jsonwebtoken')
 const JwtOptions = {
   algorithm: 'HS256',
-  expiresIn: '1h'
+  expiresIn: '1h',
 }
 const JwtActionException = require('../Errors/JwtActionException')
 
@@ -18,7 +18,7 @@ class JwtHandler {
   static refresh(token) {
     try {
       const payload = this.stripDates(
-        this.validate(token)
+        this.validate(token),
       )
 
       return this.generate(payload)
@@ -41,7 +41,7 @@ class JwtHandler {
       return Jwt.verify(
         token.split(' ')[1],
         process.env.JWT_SHARED_SECRET,
-        JwtOptions
+        JwtOptions,
       )
     } catch (error) {
       throw new JwtActionException(error)
@@ -62,7 +62,7 @@ class JwtHandler {
       return Jwt.sign(
         claims,
         process.env.JWT_SHARED_SECRET,
-        JwtOptions
+        JwtOptions,
       )
     } catch (error) {
       throw new JwtActionException(error)

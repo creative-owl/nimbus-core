@@ -6,23 +6,23 @@ const { v4: uuidv4 } = require('uuid')
 const RolesSchema = new Schema({
   _id: {
     type: String,
-    default: () => uuidv4()
+    default: () => uuidv4(),
   },
   name: {
     type: String,
     unique: true,
-    required: true
+    required: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
 }, {
   timestamps: {
     createdAt: 'created_at',
-    updatedAt: 'updated_at'
+    updatedAt: 'updated_at',
   },
-  collection: 'roles'
+  collection: 'roles',
 })
 
 module.exports = mongoose.model('Roles', RolesSchema)

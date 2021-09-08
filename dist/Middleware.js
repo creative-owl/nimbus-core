@@ -23,15 +23,15 @@ class Middleware {
         errors: {
           authorization: {
             message: 'Authorization token was not found!',
-            rule: 'must-authorize'
-          }
-        }
+            rule: 'must-authorize',
+          },
+        },
       }
     }
 
     let accessControlResult = await AccessHandler.hasRole(
       Request.headers.Authorization,
-      RoleMapping[Request.method]
+      RoleMapping[Request.method],
     )
 
     if (accessControlResult !== true) {
@@ -41,9 +41,9 @@ class Middleware {
           errors: {
             jwt: {
               message: 'Please check that your JWT is valid!',
-              rule: 'must-have-valid-token'
-            }
-          }
+              rule: 'must-have-valid-token',
+            },
+          },
         }
       }
 
@@ -52,9 +52,9 @@ class Middleware {
         errors: {
           role: {
             message: 'Please check that you have correct role to preform this opperation',
-            rule: 'must-have-role'
-          }
-        }
+            rule: 'must-have-role',
+          },
+        },
       }
     }
   }

@@ -22,7 +22,7 @@ class Response {
     return {
       'statusCode': status,
       'headers': returnHeaders,
-      'body': JSON.stringify(body)
+      'body': JSON.stringify(body),
     }
   }
 };

@@ -31,7 +31,7 @@ class Http {
     }
 
     return await controller[method](
-      request, response
+      request, response,
     )
   }
 }

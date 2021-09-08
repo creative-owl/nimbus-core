@@ -9,7 +9,7 @@ class Controller {
   success(attributes) {
     return {
       status: 'success',
-      attributes
+      attributes,
     }
   }
 
@@ -23,7 +23,7 @@ class Controller {
   validation(errors) {
     return {
       status: 'failure',
-      errors: errors
+      errors: errors,
     }
   }
 
@@ -40,9 +40,9 @@ class Controller {
       errors: {
         [exception.name]: {
           message: exception.message,
-          stack: exception.stack
-        }
-      }
+          stack: exception.stack,
+        },
+      },
     }
   }
 }
