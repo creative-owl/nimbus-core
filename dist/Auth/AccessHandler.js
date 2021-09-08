@@ -1,5 +1,6 @@
+const Roles = require('../Models/Roles');
+const UserRoles = require('../Models/UsersRoles');
 const JwtHandler = require('./JwtHandler');
-const { Roles, UserRoles } = require('@baseplay/models');
 
 class AccessHandler {
   /**
