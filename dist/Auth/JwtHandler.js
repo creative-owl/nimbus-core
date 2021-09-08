@@ -1,9 +1,9 @@
-const Jwt = require('jsonwebtoken');
+const Jwt = require('jsonwebtoken')
 const JwtOptions = {
   algorithm: 'HS256',
   expiresIn: '1h'
-};
-const JwtActionException = require('../Errors/JwtActionException');
+}
+const JwtActionException = require('../Errors/JwtActionException')
 
 class JwtHandler {
   /**
@@ -19,11 +19,11 @@ class JwtHandler {
     try {
       const payload = this.stripDates(
         this.validate(token)
-      );
+      )
 
-      return this.generate(payload);
+      return this.generate(payload)
     } catch (error) {
-      throw new JwtActionException(error);
+      throw new JwtActionException(error)
     }
   }
 
@@ -42,9 +42,9 @@ class JwtHandler {
         token.split(' ')[1],
         process.env.JWT_SHARED_SECRET,
         JwtOptions
-      );
+      )
     } catch (error) {
-      throw new JwtActionException(error);
+      throw new JwtActionException(error)
     }
   }
 
@@ -63,9 +63,9 @@ class JwtHandler {
         claims,
         process.env.JWT_SHARED_SECRET,
         JwtOptions
-      );
+      )
     } catch (error) {
-      throw new JwtActionException(error);
+      throw new JwtActionException(error)
     }
   }
 
@@ -77,11 +77,11 @@ class JwtHandler {
    * @returns {Object<string, any>}
    */
   static stripDates(token) {
-    delete token.iat;
-    delete token.exp;
+    delete token.iat
+    delete token.exp
 
-    return token;
+    return token
   }
 }
 
-module.exports = JwtHandler;
+module.exports = JwtHandler
