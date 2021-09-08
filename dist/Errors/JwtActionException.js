@@ -7,13 +7,13 @@ class JwtActionException extends Error {
    * @returns {Error}
    */
   constructor(message) {
-    super(message);
+    super(message)
 
-    this.name = this.constructor.name;
-    this.type = message.toString();
+    this.name = this.constructor.name
+    this.type = message.toString()
 
-    Error.captureStackTrace(this, this.constructor);
+    Error.captureStackTrace(this, this.constructor)
   }
 }
 
-module.exports = JwtActionException;
+module.exports = JwtActionException

@@ -10,7 +10,7 @@ class Controller {
     return {
       status: 'success',
       attributes
-    };
+    }
   }
 
   /**
@@ -24,7 +24,7 @@ class Controller {
     return {
       status: 'failure',
       errors: errors
-    };
+    }
   }
 
   /**
@@ -43,8 +43,8 @@ class Controller {
           stack: exception.stack
         }
       }
-    };
+    }
   }
 }
 
-module.exports = Controller;
+module.exports = Controller

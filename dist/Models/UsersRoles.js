@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
-const { v4: uuidv4 } = require('uuid');
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+const { v4: uuidv4 } = require('uuid')
 
 const UsersRolesSchema = new Schema({
   _id: {
@@ -21,6 +21,6 @@ const UsersRolesSchema = new Schema({
     updatedAt: 'updated_at'
   },
   collection: 'user_roles'
-});
+})
 
-module.exports = mongoose.model('UsersRoles', UsersRolesSchema);
+module.exports = mongoose.model('UsersRoles', UsersRolesSchema)

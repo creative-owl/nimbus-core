@@ -7,12 +7,12 @@ class DatabaseConnectionException extends Error {
    * @returns {Error}
    */
   constructor(message) {
-    super(message);
+    super(message)
 
-    this.name = this.constructor.name;
+    this.name = this.constructor.name
 
-    Error.captureStackTrace(this, this.constructor);
+    Error.captureStackTrace(this, this.constructor)
   }
 }
 
-module.exports = DatabaseConnectionException;
+module.exports = DatabaseConnectionException
