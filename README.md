@@ -1,6 +1,6 @@
-# Model package
+# Nimbus
 
-A simple package that contains all the models that are used in conjunction with MongoDB. This package should only be used with the back end micro-service architecture and not be included in front end or consumer facing packages or websites.
+The core of Nimbus. This provides the base of the application and allows for simple creation of micro-services.
 
 ## ENV variables
 
