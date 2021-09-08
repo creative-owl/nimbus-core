@@ -1,11 +1,11 @@
-const AccessHandler = require('./Auth/AccessHandler');
+const AccessHandler = require('./Auth/AccessHandler')
 
 const RoleMapping = {
   GET: process.env.ROLE_MAPPING_GET,
   POST: process.env.ROLE_MAPPING_POST,
   PATCH: process.env.ROLE_MAPPING_PATCH,
   DELETE: process.env.ROLE_MAPPING_DELETE,
-};
+}
 
 class Middleware {
   /**
@@ -26,13 +26,13 @@ class Middleware {
             rule: 'must-authorize'
           }
         }
-      };
+      }
     }
 
     let accessControlResult = await AccessHandler.hasRole(
       Request.headers.Authorization,
       RoleMapping[Request.method]
-    );
+    )
 
     if (accessControlResult !== true) {
       if (accessControlResult === 'JsonWebTokenError: invalid token') {
@@ -44,7 +44,7 @@ class Middleware {
               rule: 'must-have-valid-token'
             }
           }
-        };
+        }
       }
 
       return {
@@ -55,9 +55,9 @@ class Middleware {
             rule: 'must-have-role'
           }
         }
-      };
+      }
     }
   }
 }
 
-module.exports = Middleware;
+module.exports = Middleware

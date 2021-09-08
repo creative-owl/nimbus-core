@@ -1,12 +1,15 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const options = {
   autoIndex: false,
+  useCreateIndex: true,
+  bufferCommands: false,
   useNewUrlParser: true,
   useFindAndModify: false,
-  useUnifiedTopology: true
-};
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 3000,
+}
 const DatabaseConnectionException =
-  require('./Errors/DatabaseConnectionException');
+  require('./Errors/DatabaseConnectionException')
 
 class Connection {
   /**
@@ -19,8 +22,8 @@ class Connection {
   static async connect() {
     return await mongoose.connect(process.env.DB_CONNECTION_STRING, options)
       .catch(async (error) => {
-        return Promise.reject(new DatabaseConnectionException(error));
-      });
+        return Promise.reject(new DatabaseConnectionException(error))
+      })
   }
 
   /**
@@ -29,8 +32,8 @@ class Connection {
    * @returns {void}
    */
   static async disconnect() {
-    return await mongoose.disconnect();
+    return await mongoose.disconnect()
   }
 }
 
-module.exports = Connection;
+module.exports = Connection

@@ -15,16 +15,16 @@ class Response {
       'Access-Control-Allow-Headers':
         'Content-Type,X-Amz-Date,Authorization,X-Api-Key',
       'Access-Control-Allow-Origin': process.env.CORS_ALLOWED_ORIGIN,
-    };
+    }
 
-    let returnHeaders = Object.assign(setHeaders, headers);
+    let returnHeaders = Object.assign(setHeaders, headers)
 
     return {
       'statusCode': status,
       'headers': returnHeaders,
       'body': JSON.stringify(body)
-    };
+    }
   }
 };
 
-module.exports = Response;
+module.exports = Response

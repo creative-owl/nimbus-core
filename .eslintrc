@@ -55,7 +55,7 @@
     ],
     "semi": [
       2,
-      "always"
+      "never"
     ],
     "keyword-spacing": [
       2,

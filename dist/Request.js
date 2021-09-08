@@ -8,9 +8,9 @@ class Request {
    * @returns {Object<string, any>}
    */
   constructor(event) {
-    this.event = event;
+    this.event = event
 
-    return this.format();
+    return this.format()
   }
 
   /**
@@ -19,17 +19,17 @@ class Request {
    * @returns {Object<string, any>}
    */
   format() {
-    let request = {};
+    let request = {}
 
-    request.url = this.event.resource;
-    request.body = JSON.parse(this.event.body);
-    request.method = this.event.httpMethod;
-    request.headers = this.event.headers;
-    request.parameters = this.event.queryStringParameters;
-    request.pathParameters = this.event.pathParameters;
+    request.url = this.event.resource
+    request.body = JSON.parse(this.event.body)
+    request.method = this.event.httpMethod
+    request.headers = this.event.headers
+    request.parameters = this.event.queryStringParameters
+    request.pathParameters = this.event.pathParameters
 
-    return request;
+    return request
   }
 }
 
-module.exports = Request;
+module.exports = Request

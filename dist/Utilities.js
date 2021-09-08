@@ -8,11 +8,11 @@ class Utilities {
    */
   static stringToBool(value) {
     if (value === true || value === 'true') {
-      return true;
+      return true
     }
 
-    return false;
+    return false
   }
 };
 
-module.exports = Utilities;
+module.exports = Utilities
