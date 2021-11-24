@@ -25,9 +25,9 @@ class Request {
     request.body = JSON.parse(this.event.body)
     request.method = this.event.httpMethod
     request.headers = this.event.headers
-    request.parameters = this.event.queryStringParameters;
-    request.pathParameters = this.event.pathParameters;
-    request.multiValueParameters = this.event.multiValueQueryStringParameters;
+    request.parameters = this.event.queryStringParameters
+    request.pathParameters = this.event.pathParameters
+    request.multiValueParameters = this.event.multiValueQueryStringParameters
 
     return request
   }
