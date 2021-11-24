@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "Nimbus core package",
   "main": "index.js",
-  "scripts": {},
   "author": {
     "name": "Jason Saayman",
     "email": "jasonsaayman@gmail.com",
