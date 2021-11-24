@@ -21,6 +21,7 @@ CHANGELOG.md
 .editorconfig
 .eslintignore
 .eslintrc
+.eslintrc.js
 .babelrc
 .gitignore
 .jshintrc
