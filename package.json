@@ -1,6 +1,6 @@
 {
   "name": "@c8o/nimbus-core",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "description": "Nimbus core package",
   "main": "index.js",
   "author": {

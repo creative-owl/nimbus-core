@@ -1,11 +1,7 @@
 const mongoose = require('mongoose')
 const options = {
   autoIndex: false,
-  useCreateIndex: true,
   bufferCommands: false,
-  useNewUrlParser: true,
-  useFindAndModify: false,
-  useUnifiedTopology: true,
   serverSelectionTimeoutMS: 3000,
 }
 const DatabaseConnectionException =
