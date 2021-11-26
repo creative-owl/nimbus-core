@@ -1,5 +1,4 @@
 const Roles = require('../Models/Roles')
-const UserRoles = require('../Models/UsersRoles')
 const JwtHandler = require('./JwtHandler')
 
 class AccessHandler {
@@ -15,15 +14,15 @@ class AccessHandler {
    */
   static async hasRole(token, requiredRoleName) {
     try {
-      const tokenObject = await JwtHandler.validate(token)
-      const requiredRoleId = await this.getRoleIdFromRoleName(requiredRoleName)
-      const userRolesObject = await this.getAllUserRoles(tokenObject.user.id)
+      // const tokenObject = await JwtHandler.validate(token)
+      // const requiredRoleId = await this.getRoleIdFromRoleName(requiredRoleName)
+      // const userRolesObject = await this.getAllUserRoles(tokenObject.user.id)
 
-      for (let i in userRolesObject) {
-        if (userRolesObject[i].role_id === requiredRoleId._id) {
-          return true
-        }
-      }
+      // for (let i in userRolesObject) {
+      //   if (userRolesObject[i].role_id === requiredRoleId._id) {
+      //     return true
+      //   }
+      // }
     } catch (error) {
       return error.type
     }
@@ -40,13 +39,13 @@ class AccessHandler {
    *
    * @returns {Object<string, any>}
    */
-  static async getAllUserRoles(id) {
-    try {
-      return await UserRoles.find({ user_id: id })
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
+  // static async getAllUserRoles(id) {
+  //   try {
+  //     return await UserRoles.find({ user_id: id })
+  //   } catch (error) {
+  //     throw new Error(error)
+  //   }
+  // }
 
   /**
    * Gets the role id from the role name.
@@ -57,13 +56,13 @@ class AccessHandler {
    *
    * @returns {Object<string, any>}
    */
-  static async getRoleIdFromRoleName(roleName) {
-    try {
-      return await Roles.findOne({ name: roleName })
-    } catch (error) {
-      throw new Error(error)
-    }
-  }
+  // static async getRoleIdFromRoleName(roleName) {
+  //   try {
+  //     return await Roles.findOne({ name: roleName })
+  //   } catch (error) {
+  //     throw new Error(error)
+  //   }
+  // }
 };
 
 module.exports = AccessHandler
