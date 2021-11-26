@@ -25,4 +25,4 @@ const RolesSchema = new Schema({
   collection: 'roles',
 })
 
-export default mongoose.model('Roles', RolesSchema)
+module.exports = mongoose.model('Roles', RolesSchema)
