@@ -1,28 +1,29 @@
-const Roles = require('../Models/Roles')
 const JwtHandler = require('./JwtHandler')
+const Permissions = require('../Models/Permissions')
+const RolesPermissions = require('../Models/RolesPermissions')
 
 class AccessHandler {
   /**
-   * Determines if the user has the role needed to perform the action.
+   * Determines if the user has the permission needed to perform the action.
    *
    * @param {string} token
-   * @param {string} requiredRoleName
+   * @param {string} permission
    *
    * @throws {AccessControlException}
    *
    * @returns {boolean}
    */
-  static async hasRole(token, requiredRoleName) {
+  static async hasAccess(token, permission) {
     try {
-      // const tokenObject = await JwtHandler.validate(token)
-      // const requiredRoleId = await this.getRoleIdFromRoleName(requiredRoleName)
-      // const userRolesObject = await this.getAllUserRoles(tokenObject.user.id)
+      const tokenObject = await JwtHandler.validate(token)
+      const userPermissions = await this.getPermissions(tokenObject.user.role)
+      const requiredPermission = await this.getPermissionIdFromName(permission)
 
-      // for (let i in userRolesObject) {
-      //   if (userRolesObject[i].role_id === requiredRoleId._id) {
-      //     return true
-      //   }
-      // }
+      for (let i in userPermissions) {
+        if (userPermissions[i].permission_id === requiredPermission._id) {
+          return true
+        }
+      }
     } catch (error) {
       return error.type
     }
@@ -31,7 +32,7 @@ class AccessHandler {
   }
 
   /**
-   * Gets all the roles assigned to the user.
+   * Gets all the permissions assigned to the users role.
    *
    * @param {string} id
    *
@@ -39,30 +40,30 @@ class AccessHandler {
    *
    * @returns {Object<string, any>}
    */
-  // static async getAllUserRoles(id) {
-  //   try {
-  //     return await UserRoles.find({ user_id: id })
-  //   } catch (error) {
-  //     throw new Error(error)
-  //   }
-  // }
+  static async getPermissions(id) {
+    try {
+      return await RolesPermissions.find({ role_id: id })
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
 
   /**
-   * Gets the role id from the role name.
+   * Gets the permission id from the permission name.
    *
-   * @param {string} roleName
+   * @param {string} name
    *
    * @throws {Error}
    *
    * @returns {Object<string, any>}
    */
-  // static async getRoleIdFromRoleName(roleName) {
-  //   try {
-  //     return await Roles.findOne({ name: roleName })
-  //   } catch (error) {
-  //     throw new Error(error)
-  //   }
-  // }
+  static async getPermissionIdFromName(name) {
+    try {
+      return await Permissions.findOne({ name: name })
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
 };
 
 module.exports = AccessHandler

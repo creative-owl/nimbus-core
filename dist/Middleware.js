@@ -1,10 +1,10 @@
 const AccessHandler = require('./Auth/AccessHandler')
 
-const RoleMapping = {
-  GET: process.env.ROLE_MAPPING_GET,
-  POST: process.env.ROLE_MAPPING_POST,
-  PATCH: process.env.ROLE_MAPPING_PATCH,
-  DELETE: process.env.ROLE_MAPPING_DELETE,
+const PermissionMapping = {
+  GET: process.env.PERMISSION_GET,
+  POST: process.env.PERMISSION_POST,
+  PATCH: process.env.PERMISSION_PATCH,
+  DELETE: process.env.PERMISSION_DELETE,
 }
 
 class Middleware {
@@ -29,9 +29,9 @@ class Middleware {
       }
     }
 
-    let accessControlResult = await AccessHandler.hasRole(
+    let accessControlResult = await AccessHandler.hasAccess(
       Request.headers.Authorization,
-      RoleMapping[Request.method],
+      PermissionMapping[Request.method],
     )
 
     if (accessControlResult !== true) {

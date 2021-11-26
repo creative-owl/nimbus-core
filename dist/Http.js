@@ -30,7 +30,7 @@ class Http {
       }
     }
 
-    return await controller[method](
+    return await (new controller)[method](
       request, response,
     )
   }
