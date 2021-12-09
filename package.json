@@ -2,11 +2,15 @@
   "name": "@c8o/nimbus-core",
   "version": "1.0.3",
   "description": "Nimbus core package",
-  "main": "index.js",
+  "main": "./dist/index.cjs",
   "author": {
     "name": "Jason Saayman",
     "email": "jasonsaayman@gmail.com",
     "url": "https://github.com/jasonsaayman"
+  },
+  "exports": {
+    "import": "./dist/index.mjs",
+    "require": "./dist/index.cjs"
   },
   "license": "MIT",
   "repository": {

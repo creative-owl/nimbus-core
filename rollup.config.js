@@ -4,10 +4,16 @@ import { terser } from 'rollup-plugin-terser'
 export default [
   {
     input: './src/index.js',
-    output: {
-      file: 'index.js',
-      format: 'cjs',
-    },
+    output: [
+      {
+        file: './dist/index.cjs',
+        format: 'cjs',
+      },
+      {
+        file: './dist/index.esm',
+        format: 'esm',
+      },
+    ],
     plugins: [
       resolve(),
       terser(),
