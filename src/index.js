@@ -1,12 +1,12 @@
-const db = require('./Connection')
-const Http = require('./Http')
-const Roles = require('./Models/Roles')
-const Controller = require('./Controller')
-const JwtHandler = require('./Auth/JwtHandler')
-const Permissions = require('./Models/Permissions')
-const RolesPermissions = require('./Models/RolesPermissions')
+import db from './Connection'
+import Http from './Http'
+import Roles from './Models/Roles'
+import Controller from './Controller'
+import JwtHandler from './Auth/JwtHandler'
+import Permissions from './Models/Permissions'
+import RolesPermissions from './Models/RolesPermissions'
 
-module.exports = {
+export default {
   db,
   Http,
   Roles,

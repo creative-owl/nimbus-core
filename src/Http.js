@@ -1,7 +1,7 @@
-const Utils = require('./Utilities')
-const Request = require('./Request')
-const Response = require('./Response')
-const Middleware = require('./Middleware')
+import Utils from './Utilities'
+import Request from './Request'
+import Response from './Response'
+import Middleware from './Middleware'
 
 class Http {
   /**
@@ -9,12 +9,12 @@ class Http {
    *
    * @param {Object<string, any>} event   @inheritdoc
    * @param {Object<string, any>} context @inheritdoc
-   * @param {Controller}          controller
+   * @param {Controller}          Controller
    *
    * @returns {Object<string, any>}
    */
   // eslint-disable-next-line no-unused-vars
-  async route(event, context, controller) {
+  async route(event, context, Controller) {
     let method = event.httpMethod.toLowerCase()
     let request = new Request(event)
     let response = new Response
@@ -30,10 +30,10 @@ class Http {
       }
     }
 
-    return await (new controller)[method](
+    return await (new Controller)[method](
       request, response,
     )
   }
 }
 
-module.exports = Http
+export default Http

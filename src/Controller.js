@@ -47,4 +47,4 @@ class Controller {
   }
 }
 
-module.exports = Controller
+export default Controller

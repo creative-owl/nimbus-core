@@ -1,4 +1,4 @@
-const AccessHandler = require('./Auth/AccessHandler')
+import AccessHandler from './Auth/AccessHandler'
 
 const PermissionMapping = {
   GET: process.env.PERMISSION_GET,
@@ -29,7 +29,7 @@ class Middleware {
       }
     }
 
-    let accessControlResult = await AccessHandler.hasAccess(
+    let accessControlResult = await AccessHandler.hasPermission(
       Request.headers.Authorization,
       PermissionMapping[Request.method],
     )
@@ -60,4 +60,4 @@ class Middleware {
   }
 }
 
-module.exports = Middleware
+export default Middleware

@@ -1,6 +1,7 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
+import { v4 as uuidv4 } from 'uuid'
+
 const Schema = mongoose.Schema
-const { v4: uuidv4 } = require('uuid')
 
 const RolesSchema = new Schema({
   _id: {
@@ -25,4 +26,4 @@ const RolesSchema = new Schema({
   collection: 'roles',
 })
 
-module.exports = mongoose.model('Roles', RolesSchema)
+export default mongoose.model('Roles', RolesSchema)

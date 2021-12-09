@@ -1,9 +1,10 @@
-const Jwt = require('jsonwebtoken')
+import Jwt from 'jsonwebtoken'
+import JwtActionException from '../Errors/JwtActionException'
+
 const JwtOptions = {
   algorithm: 'HS256',
   expiresIn: '1h',
 }
-const JwtActionException = require('../Errors/JwtActionException')
 
 class JwtHandler {
   /**
@@ -84,4 +85,4 @@ class JwtHandler {
   }
 }
 
-module.exports = JwtHandler
+export default JwtHandler

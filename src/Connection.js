@@ -1,11 +1,11 @@
-const mongoose = require('mongoose')
+import mongoose from 'mongoose'
+import DatabaseConnectionException from './Errors/DatabaseConnectionException'
+
 const options = {
   autoIndex: false,
   bufferCommands: false,
   serverSelectionTimeoutMS: 3000,
 }
-const DatabaseConnectionException =
-  require('./Errors/DatabaseConnectionException')
 
 class Connection {
   /**
@@ -32,4 +32,4 @@ class Connection {
   }
 }
 
-module.exports = Connection
+export default Connection

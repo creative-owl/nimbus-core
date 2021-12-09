@@ -15,4 +15,4 @@ class DatabaseConnectionException extends Error {
   }
 }
 
-module.exports = DatabaseConnectionException
+export default DatabaseConnectionException

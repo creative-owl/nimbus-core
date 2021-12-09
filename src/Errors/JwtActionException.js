@@ -16,4 +16,4 @@ class JwtActionException extends Error {
   }
 }
 
-module.exports = JwtActionException
+export default JwtActionException

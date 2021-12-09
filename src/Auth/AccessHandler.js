@@ -1,6 +1,6 @@
-const JwtHandler = require('./JwtHandler')
-const Permissions = require('../Models/Permissions')
-const RolesPermissions = require('../Models/RolesPermissions')
+import JwtHandler from './JwtHandler'
+import Permissions from '../Models/Permissions'
+import RolesPermissions from '../Models/RolesPermissions'
 
 class AccessHandler {
   /**
@@ -13,7 +13,7 @@ class AccessHandler {
    *
    * @returns {boolean}
    */
-  static async hasAccess(token, permission) {
+  static async hasPermission(token, permission) {
     try {
       const tokenObject = await JwtHandler.validate(token)
       const userPermissions = await this.getPermissions(tokenObject.user.role)
@@ -66,4 +66,4 @@ class AccessHandler {
   }
 };
 
-module.exports = AccessHandler
+export default AccessHandler
