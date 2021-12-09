@@ -3,6 +3,9 @@
   "version": "1.0.3",
   "description": "Nimbus core package",
   "main": "./dist/index.cjs",
+  "scripts": {
+    "build": "rollup --config"
+  },
   "author": {
     "name": "Jason Saayman",
     "email": "jasonsaayman@gmail.com",
