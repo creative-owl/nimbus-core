@@ -1,6 +1,6 @@
 {
   "name": "@c8o/nimbus-core",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Nimbus core package",
   "main": "./dist/index.cjs",
   "scripts": {
