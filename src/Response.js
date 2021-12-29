@@ -12,8 +12,7 @@ class Response {
     let setHeaders = {
       'Content-Type': 'application/json; charset=utf-8',
       'Access-Control-Allow-Methods': process.env.CORS_ALLOWED_METHODS,
-      'Access-Control-Allow-Headers':
-        'Content-Type,X-Amz-Date,Authorization,X-Api-Key',
+      'Access-Control-Allow-Headers': '*',
       'Access-Control-Allow-Origin': process.env.CORS_ALLOWED_ORIGIN,
     }
 
