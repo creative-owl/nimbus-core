@@ -1,1 +1,538 @@
-"use strict";var e=require("mongoose"),t=require("jsonwebtoken"),r=require("uuid");function s(e){return e&&"object"==typeof e&&"default"in e?e:{default:e}}var a=s(e),n=s(t);class i extends Error{constructor(e){super(e),this.name=this.constructor.name,Error.captureStackTrace(this,this.constructor)}}const o={autoIndex:!1,bufferCommands:!1,serverSelectionTimeoutMS:3e3};class c{constructor(e){return this.event=e,this.format()}format(){let e={};return e.url=this.event.resource,e.body=JSON.parse(this.event.body),e.method=this.event.httpMethod,e.headers=this.event.headers,e.parameters=this.event.queryStringParameters,e.pathParameters=this.event.pathParameters,e.multiValueParameters=this.event.multiValueQueryStringParameters,e}}class u{json(e,t,r){let s={"Content-Type":"application/json; charset=utf-8","Access-Control-Allow-Methods":process.env.CORS_ALLOWED_METHODS,"Access-Control-Allow-Headers":"Content-Type,X-Amz-Date,Authorization,X-Api-Key","Access-Control-Allow-Origin":process.env.CORS_ALLOWED_ORIGIN};return{statusCode:e,headers:Object.assign(s,r),body:JSON.stringify(t)}}}class l extends Error{constructor(e){super(e),this.name=this.constructor.name,this.type=e.toString(),Error.captureStackTrace(this,this.constructor)}}const d={algorithm:"HS256",expiresIn:"1h"};class h{static refresh(e){try{const t=this.stripDates(this.validate(e));return this.generate(t)}catch(e){throw new l(e)}}static validate(e){try{return n.default.verify(e.split(" ")[1],process.env.JWT_SHARED_SECRET,d)}catch(e){throw new l(e)}}static generate(e){try{return n.default.sign(e,process.env.JWT_SHARED_SECRET,d)}catch(e){throw new l(e)}}static stripDates(e){return delete e.iat,delete e.exp,e}}const m=new(0,a.default.Schema)({_id:{type:String,default:()=>r.v4()},name:{type:String,unique:!0,required:!0},description:{type:String,required:!0}},{timestamps:{createdAt:"created_at",updatedAt:"updated_at"},collection:"permissions"});var p=a.default.model("Permissions",m);const S=new(0,a.default.Schema)({_id:{type:String,default:()=>r.v4()},role_id:{type:String,required:!0},permission_id:{type:String,required:!0}},{timestamps:{createdAt:"created_at",updatedAt:"updated_at"},collection:"roles_permissions"});var f=a.default.model("RolesPermissions",S);const v={GET:process.env.PERMISSION_GET,POST:process.env.PERMISSION_POST,PATCH:process.env.PERMISSION_PATCH,DELETE:process.env.PERMISSION_DELETE};class y{async hasAccess(e){if("Authorization"in e.headers==!1)return{status:"failure",errors:{authorization:{message:"Authorization token was not found!",rule:"must-authorize"}}};let t=await class{static async hasPermission(e,t){try{const r=await h.validate(e),s=await this.getPermissions(r.user.role),a=await this.getPermissionIdFromName(t);for(let e in s)if(s[e].permission_id===a._id)return!0}catch(e){return e.type}return!1}static async getPermissions(e){try{return await f.find({role_id:e})}catch(e){throw new Error(e)}}static async getPermissionIdFromName(e){try{return await p.findOne({name:e})}catch(e){throw new Error(e)}}}.hasPermission(e.headers.Authorization,v[e.method]);return!0!==t?"JsonWebTokenError: invalid token"===t?{status:"failure",errors:{jwt:{message:"Please check that your JWT is valid!",rule:"must-have-valid-token"}}}:{status:"failure",errors:{role:{message:"Please check that you have correct role to preform this opperation",rule:"must-have-role"}}}:void 0}}const w=new(0,a.default.Schema)({_id:{type:String,default:()=>r.v4()},name:{type:String,unique:!0,required:!0},description:{type:String,default:null,required:!1}},{timestamps:{createdAt:"created_at",updatedAt:"updated_at"},collection:"roles"});var g=a.default.model("Roles",w);var E={db:class{static async connect(){return await a.default.connect(process.env.DB_CONNECTION_STRING,o).catch((async e=>Promise.reject(new i(e))))}static async disconnect(){return await a.default.disconnect()}},Http:class{async route(e,t,r){let s=e.httpMethod.toLowerCase(),a=new c(e),n=new u;if(class{static stringToBool(e){return!0===e||"true"===e}}.stringToBool(process.env.AUTH_ENABLED)&&"OPTIONS"!==a.method){let e=await(new y).hasAccess(a);if(e)return n.json(401,e)}return await(new r)[s](a,n)}},Roles:g,Controller:class{success(e){return{status:"success",attributes:e}}validation(e){return{status:"failure",errors:e}}exception(e){return{status:"failure",errors:{[e.name]:{message:e.message,stack:e.stack}}}}},JwtHandler:h,Permissions:p,RolesPermissions:f};module.exports=E;
+'use strict';
+
+var mongoose = require('mongoose');
+var Jwt = require('jsonwebtoken');
+var uuid = require('uuid');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var mongoose__default = /*#__PURE__*/_interopDefaultLegacy(mongoose);
+var Jwt__default = /*#__PURE__*/_interopDefaultLegacy(Jwt);
+
+class DatabaseConnectionException extends Error {
+  /**
+   * Creates a custom error for database exceptions.
+   *
+   * @param {string} message
+   *
+   * @returns {Error}
+   */
+  constructor(message) {
+    super(message);
+
+    this.name = this.constructor.name;
+
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+const options = {
+  autoIndex: false,
+  bufferCommands: false,
+  serverSelectionTimeoutMS: 3000,
+};
+
+class Connection {
+  /**
+   * Initiates the database connection.
+   *
+   * @throws {DatabaseConnectionException}
+   *
+   * @returns {void}
+   */
+  static async connect() {
+    return await mongoose__default["default"].connect(process.env.DB_CONNECTION_STRING, options)
+      .catch(async (error) => {
+        return Promise.reject(new DatabaseConnectionException(error))
+      })
+  }
+
+  /**
+   * Releases the database connection.
+   *
+   * @returns {void}
+   */
+  static async disconnect() {
+    return await mongoose__default["default"].disconnect()
+  }
+}
+
+class Utilities {
+  /**
+   * Converts a string value to a boolean value.
+   *
+   * @param {boolean|string} value
+   *
+   * @returns {boolean}
+   */
+  static stringToBool(value) {
+    if (value === true || value === 'true') {
+      return true
+    }
+
+    return false
+  }
+}
+
+class Request {
+  /**
+   * Constructs a instance of the class.
+   *
+   * @param {Object<string, any>} event The event passed from the API
+   *                                    gateway to the Lambda instance.
+   *
+   * @returns {Object<string, any>}
+   */
+  constructor(event) {
+    this.event = event;
+
+    return this.format()
+  }
+
+  /**
+   * Formats the request data in a more unifrom manner.
+   *
+   * @returns {Object<string, any>}
+   */
+  format() {
+    let request = {};
+
+    request.url = this.event.resource;
+    request.body = JSON.parse(this.event.body);
+    request.method = this.event.httpMethod;
+    request.headers = this.event.headers;
+    request.parameters = this.event.queryStringParameters;
+    request.pathParameters = this.event.pathParameters;
+    request.multiValueParameters = this.event.multiValueQueryStringParameters;
+
+    return request
+  }
+}
+
+class Response {
+  /**
+   * Returns a JSON response.
+   *
+   * @param {number}              status
+   * @param {Object<string, any>} body
+   * @param {Object<string, any>} headers
+   *
+   * @returns {Object<string, any>}
+   */
+  json(status, body, headers) {
+    let setHeaders = {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Access-Control-Allow-Methods': process.env.CORS_ALLOWED_METHODS,
+      'Access-Control-Allow-Headers': '*, Authorization',
+      'Access-Control-Expose-Headers': '*, Authorization',
+      'Access-Control-Allow-Credentials': true,
+      'Access-Control-Allow-Origin': process.env.CORS_ALLOWED_ORIGIN,
+    };
+
+    let returnHeaders = Object.assign(setHeaders, headers);
+
+    return {
+      'statusCode': status,
+      'headers': returnHeaders,
+      'body': JSON.stringify(body),
+    }
+  }
+}
+
+class JwtActionException extends Error {
+  /**
+   * Creates a custom error.
+   *
+   * @param {string} message
+   *
+   * @returns {Error}
+   */
+  constructor(message) {
+    super(message);
+
+    this.name = this.constructor.name;
+    this.type = message.toString();
+
+    Error.captureStackTrace(this, this.constructor);
+  }
+}
+
+const JwtOptions = {
+  algorithm: 'HS256',
+  expiresIn: '1h',
+};
+
+class JwtHandler {
+  /**
+   * Refresh's the given token after validating.
+   *
+   * @param {string} token
+   *
+   * @throws {JwtActionException}
+   *
+   * @returns {string}
+   */
+  static refresh(token) {
+    try {
+      const payload = this.stripDates(
+        this.validate(token),
+      );
+
+      return this.generate(payload)
+    } catch (error) {
+      throw new JwtActionException(error)
+    }
+  }
+
+  /**
+   * Validates the token.
+   *
+   * @param {string} token
+   *
+   * @throws {JwtActionException}
+   *
+   * @returns {Object<string, any>}
+   */
+  static validate(token) {
+    try {
+      return Jwt__default["default"].verify(
+        token.split(' ')[1],
+        process.env.JWT_SHARED_SECRET,
+        JwtOptions,
+      )
+    } catch (error) {
+      throw new JwtActionException(error)
+    }
+  }
+
+  /**
+   * Generates a new token.
+   *
+   * @param {Object<string, any>} claims
+   *
+   * @throws {JwtActionException}
+   *
+   * @returns {string}
+   */
+  static generate(claims) {
+    try {
+      return Jwt__default["default"].sign(
+        claims,
+        process.env.JWT_SHARED_SECRET,
+        JwtOptions,
+      )
+    } catch (error) {
+      throw new JwtActionException(error)
+    }
+  }
+
+  /**
+   * Strips the dates from the token before refreshing.
+   *
+   * @param {Object<string, any>} token
+   *
+   * @returns {Object<string, any>}
+   */
+  static stripDates(token) {
+    delete token.iat;
+    delete token.exp;
+
+    return token
+  }
+}
+
+const Schema$2 = mongoose__default["default"].Schema;
+
+const PermissionsSchema = new Schema$2({
+  _id: {
+    type: String,
+    default: () => uuid.v4(),
+  },
+  name: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+  description: {
+    type: String,
+    required: true,
+  },
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
+  collection: 'permissions',
+});
+
+var Permissions = mongoose__default["default"].model('Permissions', PermissionsSchema);
+
+const Schema$1 = mongoose__default["default"].Schema;
+
+const RolesPermissionsSchema = new Schema$1({
+  _id: {
+    type: String,
+    default: () => uuid.v4(),
+  },
+  role_id: {
+    type: String,
+    required: true,
+  },
+  permission_id: {
+    type: String,
+    required: true,
+  },
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
+  collection: 'roles_permissions',
+});
+
+var RolesPermissions = mongoose__default["default"].model('RolesPermissions', RolesPermissionsSchema);
+
+class AccessHandler {
+  /**
+   * Determines if the user has the permission needed to perform the action.
+   *
+   * @param {string} token
+   * @param {string} permission
+   *
+   * @throws {AccessControlException}
+   *
+   * @returns {boolean}
+   */
+  static async hasPermission(token, permission) {
+    try {
+      const tokenObject = await JwtHandler.validate(token);
+      const userPermissions = await this.getPermissions(tokenObject.user.role);
+      const requiredPermission = await this.getPermissionIdFromName(permission);
+
+      for (let i in userPermissions) {
+        if (userPermissions[i].permission_id === requiredPermission._id) {
+          return true
+        }
+      }
+    } catch (error) {
+      return error.type
+    }
+
+    return false
+  }
+
+  /**
+   * Gets all the permissions assigned to the users role.
+   *
+   * @param {string} id
+   *
+   * @throws {Error}
+   *
+   * @returns {Object<string, any>}
+   */
+  static async getPermissions(id) {
+    try {
+      return await RolesPermissions.find({ role_id: id })
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+
+  /**
+   * Gets the permission id from the permission name.
+   *
+   * @param {string} name
+   *
+   * @throws {Error}
+   *
+   * @returns {Object<string, any>}
+   */
+  static async getPermissionIdFromName(name) {
+    try {
+      return await Permissions.findOne({ name: name })
+    } catch (error) {
+      throw new Error(error)
+    }
+  }
+}
+
+const PermissionMapping = {
+  GET: process.env.PERMISSION_GET,
+  POST: process.env.PERMISSION_POST,
+  PATCH: process.env.PERMISSION_PATCH,
+  DELETE: process.env.PERMISSION_DELETE,
+};
+
+class Middleware {
+  /**
+   * Determines if the incomming request has access to preform the
+   * action.
+   *
+   * @param {Object<string, any>} Request
+   *
+   * @returns {Object<string, any>|void}
+   */
+  async hasAccess(Request) {
+    if ('Authorization' in Request.headers === false) {
+      return {
+        status: 'failure',
+        errors: {
+          authorization: {
+            message: 'Authorization token was not found!',
+            rule: 'must-authorize',
+          },
+        },
+      }
+    }
+
+    let accessControlResult = await AccessHandler.hasPermission(
+      Request.headers.Authorization,
+      PermissionMapping[Request.method],
+    );
+
+    if (accessControlResult !== true) {
+      if (accessControlResult === 'JsonWebTokenError: invalid token') {
+        return {
+          status: 'failure',
+          errors: {
+            jwt: {
+              message: 'Please check that your JWT is valid!',
+              rule: 'must-have-valid-token',
+            },
+          },
+        }
+      }
+
+      return {
+        status: 'failure',
+        errors: {
+          role: {
+            message: 'Please check that you have correct role to preform this opperation',
+            rule: 'must-have-role',
+          },
+        },
+      }
+    }
+  }
+}
+
+class Http {
+  /**
+   * Handles the http request and response.
+   *
+   * @param {Object<string, any>} event   @inheritdoc
+   * @param {Object<string, any>} context @inheritdoc
+   * @param {Controller}          Controller
+   *
+   * @returns {Object<string, any>}
+   */
+  // eslint-disable-next-line no-unused-vars
+  async route(event, context, Controller) {
+    let method = event.httpMethod.toLowerCase();
+    let request = new Request(event);
+    let response = new Response;
+
+    if (
+      Utilities.stringToBool(process.env.AUTH_ENABLED) &&
+      request.method !== 'OPTIONS'
+    ) {
+      let middleware = await (new Middleware).hasAccess(request);
+
+      if (middleware) {
+        return response.json(401, middleware)
+      }
+    }
+
+    return await (new Controller)[method](
+      request, response,
+    )
+  }
+}
+
+const Schema = mongoose__default["default"].Schema;
+
+const RolesSchema = new Schema({
+  _id: {
+    type: String,
+    default: () => uuid.v4(),
+  },
+  name: {
+    type: String,
+    unique: true,
+    required: true,
+  },
+  description: {
+    type: String,
+    default:null,
+    required: false,
+  },
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+    updatedAt: 'updated_at',
+  },
+  collection: 'roles',
+});
+
+var Roles = mongoose__default["default"].model('Roles', RolesSchema);
+
+class Controller {
+  /**
+   * Render a successful response object.
+   *
+   * @param   {Object<string, any>} attributes
+   *
+   * @returns {Object<string, any>}
+   */
+  success(attributes) {
+    return {
+      status: 'success',
+      attributes,
+    }
+  }
+
+  /**
+   * Render a validation failure response object.
+   *
+   * @param   {Object<string, any>} errors
+   *
+   * @returns {Object<string, any>}
+   */
+  validation(errors) {
+    return {
+      status: 'failure',
+      errors: errors,
+    }
+  }
+
+  /**
+   * Render a exception failure response object.
+   *
+   * @param   {Object<string, any>} exception
+   *
+   * @returns {Object<string, any>}
+   */
+  exception(exception) {
+    return {
+      status: 'failure',
+      errors: {
+        [exception.name]: {
+          message: exception.message,
+          stack: exception.stack,
+        },
+      },
+    }
+  }
+}
+
+var index = {
+  db: Connection,
+  Http,
+  Roles,
+  Controller,
+  JwtHandler,
+  Permissions,
+  RolesPermissions,
+};
+
+module.exports = index;
