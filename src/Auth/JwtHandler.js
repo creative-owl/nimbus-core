@@ -3,7 +3,7 @@ import JwtActionException from '../Errors/JwtActionException'
 
 const JwtOptions = {
   algorithm: 'HS256',
-  expiresIn: '1h',
+  expiresIn: '24h',
 }
 
 class JwtHandler {

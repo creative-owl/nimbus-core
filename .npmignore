@@ -25,3 +25,4 @@ CHANGELOG.md
 .babelrc
 .gitignore
 .jshintrc
+rollup.config.js
