@@ -494,7 +494,7 @@ class Controller {
   /**
    * Render a validation failure response object.
    *
-   * @param   {Object<string, any>} errors
+   * @param   {Array<Object<string, any>>} errors
    *
    * @returns {Object<string, any>}
    */
@@ -515,12 +515,13 @@ class Controller {
   exception(exception) {
     return {
       status: 'failure',
-      errors: {
-        [exception.name]: {
+      errors: [
+        {
+          name: exception.name,
           message: exception.message,
           stack: exception.stack,
         },
-      },
+      ],
     }
   }
 }
