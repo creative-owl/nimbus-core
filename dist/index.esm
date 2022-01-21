@@ -492,9 +492,19 @@ class Controller {
    * @returns {Object<string, any>}
    */
   validation(errors) {
+    const errorArray = [];
+
+    for (const error in errors) {
+      errorArray.push({
+        name: error,
+        message: errors[error].message,
+        rule: errors[error].rule,
+      });
+    }
+
     return {
       status: 'failure',
-      errors: errors,
+      errors: errorArray,
     }
   }
 
