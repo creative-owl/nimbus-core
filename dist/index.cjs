@@ -185,6 +185,26 @@ class JwtHandler {
   }
 
   /**
+   * Update's a token with a new payload after validating.
+   *
+   * @param {string} token
+   * @param {Object<string, any>} payload
+   *
+   * @throws {JwtActionException}
+   *
+   * @returns {string}
+   */
+  static update(token, payload) {
+    try {
+      this.validate(token);
+
+      return this.generate(payload)
+    } catch (error) {
+      throw new JwtActionException(error)
+    }
+  }
+
+  /**
    * Validates the token.
    *
    * @param {string} token
